@@ -148,12 +148,14 @@ int main() {
 #define LOG_DEBUG(str, args...) printf (str, ##args)
 class TimerLogs{ 
 public:
-  int print_timed_logs (std::string id, std::chrono::milliseconds interval);
+  bool print_timed_logs (std::string id, std::chrono::milliseconds interval);
+  bool delete_timed_logs (std::string id);
+  void reset_timed_logs ();
 private:
   std::map<std::string, std::chrono::_V2::system_clock::time_point> ret;
 };
 
-int TimerLogs::print_timed_logs (std::string id, std::chrono::milliseconds interval) {
+bool TimerLogs::print_timed_logs (std::string id, std::chrono::milliseconds interval) {
   if (ret.find(id) == ret.end()) {
     ret[id] = std::chrono::system_clock::now() + interval;
   } else {
@@ -166,6 +168,21 @@ int TimerLogs::print_timed_logs (std::string id, std::chrono::milliseconds inter
   }
   return true;
 }
+
+bool TimerLogs::delete_timed_logs (std::string id) {
+  if (ret.find(id) == ret.end()) {
+    ret.erase(id);
+  } else {
+      return false;
+  }
+  return true;
+}
+
+void TimerLogs::reset_timed_logs () {
+  ret.clear();
+}
+
+
 
 int int_main() {
   TimerLogs a;
